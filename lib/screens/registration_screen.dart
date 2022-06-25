@@ -219,7 +219,7 @@ void createNewaUser(
         break;
       default:
         showToast(
-          message: eror.code,
+          message: eror.code.toString(),
         );
     }
   }
