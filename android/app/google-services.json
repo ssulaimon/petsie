@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "60751418446",
+    "project_id": "petsiecatanddog",
+    "storage_bucket": "petsiecatanddog.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:60751418446:android:85158ad655e7c61eb75f1f",
+        "android_client_info": {
+          "package_name": "com.petsie.petsie"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "60751418446-gavi5g0ho1at5j7lnihgmvib47o391qk.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBimj2AeRHq6vREbbiuE8AS_ngcl2Gx-lQ"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "60751418446-gavi5g0ho1at5j7lnihgmvib47o391qk.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
