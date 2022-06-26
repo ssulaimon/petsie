@@ -1,52 +1,42 @@
-// ignore_for_file: prefer_const_literals_to_create_immutables
-
 import 'dart:developer';
 
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_signin_button/button_list.dart';
-import 'package:flutter_signin_button/button_view.dart';
+import 'package:petsie/functions/dialogue.dart';
 import 'package:petsie/functions/toast.dart';
+import 'package:petsie/routes/routes_names.dart';
 
-import 'package:petsie/images_name/colors/colors.dart';
-import 'package:petsie/images_name/images_names.dart';
-import 'package:toast/toast.dart';
+import '../images_name/colors/colors.dart';
+import '../images_name/images_names.dart';
 
-import '../functions/dialogue.dart';
-
-class Registration extends StatefulWidget {
-  const Registration({Key? key}) : super(key: key);
+class LoginScreen extends StatefulWidget {
+  const LoginScreen({Key? key}) : super(key: key);
 
   @override
-  State<Registration> createState() => _RegistrationState();
+  State<LoginScreen> createState() => _LoginScreenState();
 }
 
-late TextEditingController name;
-late TextEditingController _email;
-late TextEditingController _password;
-
-class _RegistrationState extends State<Registration> {
+class _LoginScreenState extends State<LoginScreen> {
+  late TextEditingController _email;
+  late TextEditingController _password;
   @override
   void initState() {
     // TODO: implement initState
-    super.initState();
-    name = TextEditingController();
     _email = TextEditingController();
     _password = TextEditingController();
+    super.initState();
   }
 
   @override
   void dispose() {
     // TODO: implement dispose
-    super.dispose();
-    name.dispose();
     _email.dispose();
     _password.dispose();
+    super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
-    ToastContext().init(context);
     return Scaffold(
       body: SingleChildScrollView(
         child: SafeArea(
@@ -67,29 +57,11 @@ class _RegistrationState extends State<Registration> {
                 ),
                 const Center(
                   child: Text(
-                    "Register",
+                    "Login",
                     style: TextStyle(
                       fontSize: 25.0,
                       color: colorCream,
                       fontFamily: 'PoppinsMedium',
-                    ),
-                  ),
-                ),
-                const SizedBox(
-                  height: 30.0,
-                ),
-                const Text("Name"),
-                TextField(
-                  controller: name,
-                  decoration: const InputDecoration(
-                    fillColor: colorGrey,
-                    focusColor: colorGrey,
-                    hintText: "Name",
-                    filled: true,
-                    focusedBorder: InputBorder.none,
-                    hoverColor: colorGrey,
-                    border: OutlineInputBorder(
-                      borderSide: BorderSide(color: colorGrey),
                     ),
                   ),
                 ),
@@ -143,14 +115,42 @@ class _RegistrationState extends State<Registration> {
                         horizontal: 30.0,
                       ),
                     ),
-                    onPressed: () {
-                      createNewaUser(
-                          email: _email.text,
-                          password: _password.text,
-                          context: context);
+                    onPressed: () async {
+                      final email = _email.text;
+                      final password = _password.text;
+
+                      try {
+                        var user = await FirebaseAuth.instance
+                            .signInWithEmailAndPassword(
+                          email: email,
+                          password: password,
+                        );
+                        if (user.user?.emailVerified == false) {
+                          dailogueShow(
+                              context: context,
+                              content: "Re-send your verification link",
+                              title: "Email verify",
+                              function: () {
+                                Navigator.of(context)
+                                    .popUntil((route) => false);
+                              },
+                              sendCode: () async {
+                                await user.user
+                                    ?.sendEmailVerification()
+                                    .whenComplete(
+                                      () => showToast(
+                                          message: "Email verification sent"),
+                                    );
+                              });
+                        } else {
+                          log("good to go");
+                        }
+                      } on FirebaseAuthException catch (erorr) {
+                        log(erorr.code);
+                      }
                     },
                     child: const Text(
-                      "Create account",
+                      "Login",
                       style: TextStyle(
                         color: colorWhite,
                         fontSize: 20.0,
@@ -169,11 +169,32 @@ class _RegistrationState extends State<Registration> {
                     ),
                   ),
                 ),
-                Center(
-                  child: SignInButton(
-                    Buttons.Google,
-                    onPressed: () {},
-                  ),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    TextButton(
+                      onPressed: () {
+                        Navigator.of(context).pushNamed(registration);
+                      },
+                      child: const Text(
+                        "Create account",
+                        style: TextStyle(
+                          color: colorBlue,
+                        ),
+                      ),
+                    ),
+                    const Text("|"),
+                    TextButton(
+                        onPressed: () {
+                          Navigator.of(context).pushNamed(verifyEmail);
+                        },
+                        child: const Text(
+                          "Email verification",
+                          style: TextStyle(
+                            color: colorBlue,
+                          ),
+                        ))
+                  ],
                 )
               ],
             ),
@@ -181,49 +202,5 @@ class _RegistrationState extends State<Registration> {
         ),
       ),
     );
-  }
-}
-
-void createNewaUser(
-    {required String email,
-    required String password,
-    required BuildContext context}) async {
-  try {
-    final userProfile =
-        await FirebaseAuth.instance.createUserWithEmailAndPassword(
-      email: email,
-      password: password,
-    );
-    await userProfile.user?.updateDisplayName(name.text);
-    await userProfile.user?.sendEmailVerification().whenComplete(() =>
-        dailogueShow(
-            context: context,
-            content:
-                "Check your email to verify your account. In some cases check your spam box",
-            title: "Email verify",
-            function: () {
-              Navigator.of(context).pop();
-            }));
-  } on FirebaseException catch (eror) {
-    switch (eror.code) {
-      case "weak-password":
-        showToast(
-          message: "Weak password",
-        );
-        log("");
-        break;
-      case "invalid-email":
-        showToast(message: "invalid-email");
-        break;
-      case ('email-already-in-use'):
-        showToast(
-          message: "email-already-in-use",
-        );
-        break;
-      default:
-        showToast(
-          message: eror.code.toString(),
-        );
-    }
   }
 }

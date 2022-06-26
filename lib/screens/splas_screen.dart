@@ -21,7 +21,7 @@ class _SplashScreenState extends State<SplashScreen> {
       case true:
         await Firebase.initializeApp(
             options: DefaultFirebaseOptions.currentPlatform);
-        Navigator.of(context).popAndPushNamed(registration);
+        Navigator.of(context).popAndPushNamed(loginScreen);
         break;
       default:
         await dailogueShow(
