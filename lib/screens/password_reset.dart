@@ -1,6 +1,11 @@
+import 'dart:developer';
+
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:petsie/functions/dialogue.dart';
+import 'package:petsie/functions/password_function.dart';
+import 'package:petsie/functions/toast.dart';
+import 'package:toast/toast.dart';
 
 import '../images_name/colors/colors.dart';
 import '../images_name/images_names.dart';
@@ -91,17 +96,7 @@ class _PasswordResetState extends State<PasswordReset> {
                       ),
                     ),
                     onPressed: () async {
-                      try {
-                        var user = await FirebaseAuth.instance
-                            .sendPasswordResetEmail(email: _email.text)
-                            .whenComplete(() => dailogueShow(
-                                context: context,
-                                content: "Reset Link sent",
-                                title: "Reset Passord",
-                                function: () {
-                                  Navigator.of(context).pop();
-                                }));
-                      } on FirebaseAuthException catch (erorr) {}
+                      resetPassword(context: context, email: _email.text);
                     },
                     child: const Text(
                       "Send link",

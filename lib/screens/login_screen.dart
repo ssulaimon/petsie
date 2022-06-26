@@ -3,8 +3,10 @@ import 'dart:developer';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:petsie/functions/dialogue.dart';
+import 'package:petsie/functions/login_function.dart';
 import 'package:petsie/functions/toast.dart';
 import 'package:petsie/routes/routes_names.dart';
+import 'package:toast/toast.dart';
 
 import '../images_name/colors/colors.dart';
 import '../images_name/images_names.dart';
@@ -116,38 +118,10 @@ class _LoginScreenState extends State<LoginScreen> {
                       ),
                     ),
                     onPressed: () async {
-                      final email = _email.text;
-                      final password = _password.text;
-
-                      try {
-                        var user = await FirebaseAuth.instance
-                            .signInWithEmailAndPassword(
-                          email: email,
-                          password: password,
-                        );
-                        if (user.user?.emailVerified == false) {
-                          dailogueShow(
-                              context: context,
-                              content: "Re-send your verification link",
-                              title: "Email verify",
-                              function: () {
-                                Navigator.of(context)
-                                    .popUntil((route) => false);
-                              },
-                              sendCode: () async {
-                                await user.user
-                                    ?.sendEmailVerification()
-                                    .whenComplete(
-                                      () => showToast(
-                                          message: "Email verification sent"),
-                                    );
-                              });
-                        } else {
-                          log("good to go");
-                        }
-                      } on FirebaseAuthException catch (erorr) {
-                        log(erorr.code);
-                      }
+                      login(
+                          context: context,
+                          email: _email.text,
+                          password: _password.text);
                     },
                     child: const Text(
                       "Login",
@@ -189,7 +163,7 @@ class _LoginScreenState extends State<LoginScreen> {
                           Navigator.of(context).pushNamed(verifyEmail);
                         },
                         child: const Text(
-                          "Email verification",
+                          "Reset password",
                           style: TextStyle(
                             color: colorBlue,
                           ),

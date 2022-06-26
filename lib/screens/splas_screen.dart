@@ -1,3 +1,4 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:internet_connection_checker/internet_connection_checker.dart';
@@ -21,7 +22,13 @@ class _SplashScreenState extends State<SplashScreen> {
       case true:
         await Firebase.initializeApp(
             options: DefaultFirebaseOptions.currentPlatform);
-        Navigator.of(context).popAndPushNamed(loginScreen);
+        var user = FirebaseAuth.instance;
+        if (user != null) {
+          Navigator.of(context).popAndPushNamed(catLoverScreen);
+        } else {
+          Navigator.of(context).popAndPushNamed(loginScreen);
+        }
+
         break;
       default:
         await dailogueShow(

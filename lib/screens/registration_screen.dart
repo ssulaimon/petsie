@@ -12,6 +12,7 @@ import 'package:petsie/images_name/colors/colors.dart';
 import 'package:petsie/images_name/images_names.dart';
 import 'package:toast/toast.dart';
 
+import '../functions/create_acct_function.dart';
 import '../functions/dialogue.dart';
 
 class Registration extends StatefulWidget {
@@ -46,7 +47,6 @@ class _RegistrationState extends State<Registration> {
 
   @override
   Widget build(BuildContext context) {
-    ToastContext().init(context);
     return Scaffold(
       body: SingleChildScrollView(
         child: SafeArea(
@@ -147,7 +147,8 @@ class _RegistrationState extends State<Registration> {
                       createNewaUser(
                           email: _email.text,
                           password: _password.text,
-                          context: context);
+                          context: context,
+                          name: name.text);
                     },
                     child: const Text(
                       "Create account",
@@ -181,49 +182,5 @@ class _RegistrationState extends State<Registration> {
         ),
       ),
     );
-  }
-}
-
-void createNewaUser(
-    {required String email,
-    required String password,
-    required BuildContext context}) async {
-  try {
-    final userProfile =
-        await FirebaseAuth.instance.createUserWithEmailAndPassword(
-      email: email,
-      password: password,
-    );
-    await userProfile.user?.updateDisplayName(name.text);
-    await userProfile.user?.sendEmailVerification().whenComplete(() =>
-        dailogueShow(
-            context: context,
-            content:
-                "Check your email to verify your account. In some cases check your spam box",
-            title: "Email verify",
-            function: () {
-              Navigator.of(context).pop();
-            }));
-  } on FirebaseException catch (eror) {
-    switch (eror.code) {
-      case "weak-password":
-        showToast(
-          message: "Weak password",
-        );
-        log("");
-        break;
-      case "invalid-email":
-        showToast(message: "invalid-email");
-        break;
-      case ('email-already-in-use'):
-        showToast(
-          message: "email-already-in-use",
-        );
-        break;
-      default:
-        showToast(
-          message: eror.code.toString(),
-        );
-    }
   }
 }
