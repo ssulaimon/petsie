@@ -6,6 +6,8 @@ import 'package:petsie/firebase_options.dart';
 import 'package:petsie/images_name/colors/colors.dart';
 import 'package:petsie/images_name/images_names.dart';
 import 'package:petsie/routes/routes_names.dart';
+import 'package:petsie/screens/quiz_screen.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import '../functions/dialogue.dart';
 
 class SplashScreen extends StatefulWidget {
@@ -24,7 +26,17 @@ class _SplashScreenState extends State<SplashScreen> {
             options: DefaultFirebaseOptions.currentPlatform);
         var user = FirebaseAuth.instance;
         if (user != null) {
-          Navigator.of(context).popAndPushNamed(catLoverScreen);
+          SharedPreferences sharedPreferences =
+              await SharedPreferences.getInstance();
+          String? choice =
+              await sharedPreferences.getString(sharePrefrenceQuiz);
+          if (choice == null) {
+            Navigator.popAndPushNamed(context, quiz);
+          } else if (choice == 'Cat') {
+            Navigator.of(context).popAndPushNamed(catLoverScreen);
+          } else {
+            Navigator.of(context).popAndPushNamed(catLoverScreen);
+          }
         } else {
           Navigator.of(context).popAndPushNamed(loginScreen);
         }

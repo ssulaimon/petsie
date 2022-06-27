@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:petsie/images_name/colors/colors.dart';
 
 import 'package:petsie/screens/cat_fact.dart';
 import 'package:petsie/screens/cat_home.dart';
@@ -21,6 +22,9 @@ class _HomeCatLoverState extends State<HomeCatLover> {
     return Scaffold(
       body: body[_selected],
       bottomNavigationBar: BottomNavigationBar(
+        backgroundColor: colorGrey,
+        selectedItemColor: colorWhite,
+        unselectedItemColor: colorBlue,
         items: const <BottomNavigationBarItem>[
           BottomNavigationBarItem(
             icon: Icon(Icons.home),

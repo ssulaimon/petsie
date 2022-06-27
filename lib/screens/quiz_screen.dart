@@ -67,27 +67,22 @@ class _QuizState extends State<Quiz> {
                 }),
             title: const Text("Dog"),
           ),
-          ListTile(
-            leading: Radio(
-                activeColor: colorBlue,
-                value: "DogAndCat",
-                groupValue: interest,
-                onChanged: (value) {
-                  setState(() {
-                    interest = value.toString();
-                  });
-                }),
-            title: const Text("Dog and Cat"),
-          ),
           FlatButton(
             onPressed: () async {
               ToastContext().init(context);
               if (interest != null) {
                 await sharedPreferences?.setString(
                     sharePrefrenceQuiz, interest.toString());
-                String? oo = sharedPreferences?.getString(sharePrefrenceQuiz);
-                log(oo.toString());
-                Navigator.of(context).popAndPushNamed(catLoverScreen);
+                String? choice =
+                    sharedPreferences?.getString(sharePrefrenceQuiz);
+                switch (choice) {
+                  case 'Cat':
+                    Navigator.of(context).popAndPushNamed(catLoverScreen);
+                    break;
+                  default:
+                    Navigator.of(context).popAndPushNamed(dogLoverScreen);
+                    break;
+                }
               } else {
                 showToast(message: "Erorr");
               }

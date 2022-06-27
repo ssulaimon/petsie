@@ -1,31 +1,31 @@
 import 'dart:convert';
-import 'dart:developer';
 
 import 'package:flutter/material.dart';
 import 'package:http/http.dart';
 import 'package:petsie/images_name/colors/colors.dart';
 
-class CatFact extends StatefulWidget {
-  const CatFact({Key? key}) : super(key: key);
+class DogFact extends StatefulWidget {
+  const DogFact({Key? key}) : super(key: key);
 
   @override
-  State<CatFact> createState() => _CatFactState();
+  State<DogFact> createState() => _DogFactState();
 }
 
 late String fact;
 Future<void> catFactapi() async {
-  var uri = Uri.parse('https://catfact.ninja/fact?max_length=600');
+  var uri = Uri.parse(
+      'https://dog-fact-api.herokuapp.com/api/v1/resources/dogs?number=1');
   // Map<String, String> header = {
   //   'X-RapidAPI-Key': '7bc9f390d3msh22d9698290555c5p1d962ejsn7e39abbb49ad'
   // };
   Response response = await get(
     uri,
   );
-  Map decode = jsonDecode(response.body);
-  fact = decode['fact'];
+  List decode = jsonDecode(response.body);
+  fact = decode[0]['fact'];
 }
 
-class _CatFactState extends State<CatFact> {
+class _DogFactState extends State<DogFact> {
   @override
   void initState() {
     // TODO: implement initState

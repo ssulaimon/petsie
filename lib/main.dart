@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:petsie/routes/routes_names.dart';
+import 'package:petsie/screens/dog_home.dart';
 import 'package:petsie/screens/home_screen_cat.dart';
 import 'package:petsie/screens/password_reset.dart';
 import 'package:petsie/screens/login_screen.dart';
@@ -19,6 +20,7 @@ void main() {
         verifyEmail: (context) => const PasswordReset(),
         quiz: (context) => const Quiz(),
         catLoverScreen: (context) => const HomeCatLover(),
+        dogLoverScreen: (context) => const DogHome(),
       },
     ),
   );
